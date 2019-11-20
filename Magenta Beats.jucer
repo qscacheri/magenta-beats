@@ -4,6 +4,12 @@
               headerPath="/anaconda3/include/python3.7m">
   <MAINGROUP id="VfqH7q" name="Magenta Beats">
     <GROUP id="{FF6A15AA-533B-42C5-7880-D917D830B584}" name="Source"/>
+    <FILE id="vTMdVX" name="ArchedSliderLookAndFeel.h" compile="0" resource="0"
+          file="Source/ArchedSliderLookAndFeel.h"/>
+    <FILE id="a7FCk0" name="MagentaBeatsLookAndFeel.cpp" compile="1" resource="0"
+          file="Source/MagentaBeatsLookAndFeel.cpp"/>
+    <FILE id="mXIGhM" name="MagentaBeatsLookAndFeel.h" compile="0" resource="0"
+          file="Source/MagentaBeatsLookAndFeel.h"/>
     <FILE id="XeL1bW" name="PluginEditor.cpp" compile="1" resource="0"
           file="Source/PluginEditor.cpp"/>
     <FILE id="HgHLkL" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
@@ -11,8 +17,7 @@
           file="Source/PluginProcessor.cpp"/>
     <FILE id="qEfc5w" name="PluginProcessor.h" compile="0" resource="0"
           file="Source/PluginProcessor.h"/>
-    <FILE id="siUsso" name="magenta_script.c" compile="1" resource="0"
-          file="Source/magenta_script.c"/>
+    <FILE id="tKU1kR" name="Note.cpp" compile="1" resource="0" file="Source/Note.cpp"/>
     <FILE id="y8btwl" name="Note.h" compile="0" resource="0" file="Source/Note.h"/>
     <FILE id="FY6FYL" name="NoteSequence.cpp" compile="1" resource="0"
           file="Source/NoteSequence.cpp"/>
@@ -20,11 +25,27 @@
     <FILE id="Uo7ueC" name="python_utils.cpp" compile="1" resource="0"
           file="Source/python_utils.cpp"/>
     <FILE id="gfwIj8" name="python_utils.h" compile="0" resource="0" file="Source/python_utils.h"/>
+    <FILE id="mwwCs0" name="SequencerComponent.cpp" compile="1" resource="0"
+          file="Source/SequencerComponent.cpp"/>
+    <FILE id="Khg024" name="SequencerComponent.h" compile="0" resource="0"
+          file="Source/SequencerComponent.h"/>
+    <FILE id="j9LaSe" name="Sequencer.cpp" compile="1" resource="0" file="Source/Sequencer.cpp"/>
+    <FILE id="h8M9xm" name="Sequencer.h" compile="0" resource="0" file="Source/Sequencer.h"/>
+    <FILE id="P4ZTE7" name="ImportThread.cpp" compile="1" resource="0"
+          file="Source/ImportThread.cpp"/>
+    <FILE id="uRyRXQ" name="ImportThread.h" compile="0" resource="0" file="Source/ImportThread.h"/>
+    <FILE id="Ur25gZ" name="LookAndFeelHolder.h" compile="0" resource="0"
+          file="Source/LookAndFeelHolder.h"/>
+    <FILE id="mTSiOr" name="qtils.cpp" compile="1" resource="0" file="../../Libraries/qtils/qtils.cpp"/>
+    <FILE id="reqSdj" name="qtils.h" compile="0" resource="0" file="../../Libraries/qtils/qtils.h"/>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="python3.7m">
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="python3.7m&#10;boost_python3&#10;"
+               extraCompilerFlags="-I/Users/quinscacheri/Documents/dev/Libraries/boost"
+               extraLinkerFlags="-L/Users/quinscacheri/Documents/dev/Libraries/boost/stage/lib &#10;&#10;&#10;">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" libraryPath="/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/config-3.7m-darwin"/>
+        <CONFIGURATION isDebug="1" name="Debug" libraryPath="/usr/local/opt/python/Frameworks/Python.framework/Versions/3.7/lib/python3.7/config-3.7m-darwin&#10;"
+                       headerPath="/Users/quinscacheri/Documents/dev/Libraries/boost&#10;/Users/quinscacheri/Documents/dev/Libraries/qtils"/>
         <CONFIGURATION isDebug="0" name="Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

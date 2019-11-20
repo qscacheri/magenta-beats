@@ -1,18 +1,10 @@
-/*
-  ==============================================================================
-
-    This file was auto-generated!
-
-    It contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 #include <cstring>
 #include <string>
-
+#include "ImportThread.h"
+#include "python_utils.h"
 
 //==============================================================================
 MagentaBeatsAudioProcessor::MagentaBeatsAudioProcessor()
@@ -24,17 +16,25 @@ MagentaBeatsAudioProcessor::MagentaBeatsAudioProcessor()
                       #endif
                        .withOutput ("Output", AudioChannelSet::stereo(), true)
                      #endif
-                       )
+                       ), parameters(*this, nullptr, "PARAMETERS", createLayout())
 #endif
 {
     Py_Initialize();
-    PyRun_SimpleString("import sys\n");
-    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python\")\n");
-    mainModule = PyImport_Import(PyUnicode_DecodeFSDefault("magenta_beats"));
+//    magenta = py::module::import("magenta");
+//    magentaMusic = magenta.attr("music");
+//    music_pb2 = magenta.attr("protobuf").attr("music_pb2");
+//    py::object n = music_pb2.attr("NoteSequence");
+    
+//    PyRun_SimpleString("import sys\n");
+//    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python\")\n");
+//    importThread.reset(new ImportThread("magenta_beats", mainModule, "import"));
+//    importThread->startThread();
+//    mainModule = PyImport_Import(PyUnicode_DecodeFSDefault("magenta_beats"));
 }
 
 MagentaBeatsAudioProcessor::~MagentaBeatsAudioProcessor()
 {
+    
 }
 
 //==============================================================================
@@ -102,8 +102,7 @@ void MagentaBeatsAudioProcessor::changeProgramName (int index, const String& new
 //==============================================================================
 void MagentaBeatsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    // Use this method as the place to do any pre-playback
-    // initialisation that you need..
+    
 }
 
 void MagentaBeatsAudioProcessor::releaseResources()
@@ -192,11 +191,32 @@ void MagentaBeatsAudioProcessor::setStateInformation (const void* data, int size
 
 void MagentaBeatsAudioProcessor::runFunction()
 {
-    PyObject* functionToCall = PyObject_GetAttrString(mainModule, "test");
-    PyObject* args = Py_BuildValue("(i)", 25);
-    DBG(PyLong_AsLong(PyObject_Call(functionToCall, args, NULL)));
-    NoteSequence::createNoteSequence(mainModule);
+    
 }
+
+py::object MagentaBeatsAudioProcessor::noteSequenceToPyNoteSequence(NoteSequence n)
+{
+    int tempo = n.getTempo();
+    py::object pyNoteSequence = music_pb2.attr("NoteSequence");
+    auto notes = n.getNotes();
+    for (int i = 0; i < notes.size(); i++){
+        pyNoteSequence.attr("add")("pitch"_a=60);
+    }
+    return pyNoteSequence;
+    
+}
+
+NoteSequence MagentaBeatsAudioProcessor::pyNoteSequenceToNoteSequence(py::object p)
+{
+    return NoteSequence();
+}
+
+AudioProcessorValueTreeState::ParameterLayout MagentaBeatsAudioProcessor::createLayout()
+{
+    AudioProcessorValueTreeState::ParameterLayout layout;
+    return layout;
+}
+
 
 
 //==============================================================================

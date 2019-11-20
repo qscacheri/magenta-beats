@@ -1,0 +1,3 @@
+/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/pybind/CMakeFiles/rebuild_cache.dir
+/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/pybind/CMakeFiles/edit_cache.dir
+/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/pybind/CMakeFiles/example.dir

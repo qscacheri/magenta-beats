@@ -5,27 +5,36 @@
 #include "Note.h"
 #include <vector>
 #include <iostream>
+#include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
 
 class NoteSequence
 {
 public:
+    static int noteValues[8];
+
+    NoteSequence();
+    
     NoteSequence(PyObject* pyNoteSequence);
     
-    int getTempo(PyObject* py);
+    int getTempo() { return tempo; }
+
+    void addNote(Note n);
+    void removeNote(int pitch, int time);
     
-    std::vector<Note> getNotes(PyObject* py);
+    bool checkAndRemoveNote(int pitch, int time);
     
+    std::vector<Note> getNotes();
+        
     std::string toString();
     
-    static PyObject* createNoteSequence(PyObject* module);
-    
-    static void addNoteToPySequnce(Note n, PyObject* pb2);
+    static double ppqToSecs(int ppq, int tempo);
 private:
-    
-    int tempo;
+    int tempo = 120;
     std::vector<Note> notes;
     
     
 };
-
 #endif

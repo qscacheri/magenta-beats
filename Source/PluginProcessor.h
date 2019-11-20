@@ -13,10 +13,19 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include <Python.h>
 #include "NoteSequence.h"
+#include "ImportThread.h"
+#include <pybind11/stl.h>
+#include "Sequencer.h"
+#include "LookAndFeelHolder.h"
+#include "MagentaBeatsLookAndFeel.h"
+
 
 //==============================================================================
 /**
 */
+namespace py = pybind11;
+using namespace pybind11::literals; // to bring in the `_a` literal
+
 class MagentaBeatsAudioProcessor  : public AudioProcessor
 {
 public:
@@ -58,13 +67,37 @@ public:
     void setStateInformation (const void* data, int sizeInBytes) override;
 
     void runFunction();
+    
+    Sequencer& getSequencer() { return sequencer; }
+    
+    bool modulesLoaded() {
+        if (magenta==nullptr)
+            return false;
+        return true;
+    }
+    AudioProcessorValueTreeState parameters;
 private:
+    AudioProcessorValueTreeState::ParameterLayout createLayout();
+    
+    py::object noteSequenceToPyNoteSequence(NoteSequence n);
+    NoteSequence pyNoteSequenceToNoteSequence(py::object p);
+
+    // Sequencer object
+    Sequencer sequencer;
     
     // py module for all processing
     PyObject* mainModule;
     
-    std::unique_ptr<NoteSequence> sequence;
+    // python modules
+    py::object magenta;
+    py::object magentaMusic;
+    py::object music_pb2;
     
+    std::unique_ptr<NoteSequence> sequence;
+    std::unique_ptr<ImportThread> importThread;
+    
+    // holder for look and feel
+    LookAndFeelHolder<MagentaBeatsLookAndFeel> lafHolder;
     //==============================================================================
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MagentaBeatsAudioProcessor)
 };

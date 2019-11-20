@@ -15,13 +15,21 @@
 MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeatsAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
+    sequencerComponent1.reset(new SequencerComponent(processor.getSequencer()));
+    sequencerComponent1->setLookAndFeel(&LookAndFeel::getDefaultLookAndFeel());
+    addAndMakeVisible(sequencerComponent1.get());
+    
+    sequencerComponent2.reset(new SequencerComponent(processor.getSequencer()));
+    sequencerComponent2->setColour(SequencerComponent::ColourIds::beatColourOffId, Colour(0xff34d8eb));
+    addAndMakeVisible(sequencerComponent2.get());
+
     test.reset(new TextButton());
     test->setButtonText("Test");
     test->onClick = [&]{ processor.runFunction(); };
     addAndMakeVisible(test.get());
     
     
-    setSize (400, 300);
+    setSize (900, 600);
 }
 
 MagentaBeatsAudioProcessorEditor::~MagentaBeatsAudioProcessorEditor()
@@ -31,15 +39,28 @@ MagentaBeatsAudioProcessorEditor::~MagentaBeatsAudioProcessorEditor()
 //==============================================================================
 void MagentaBeatsAudioProcessorEditor::paint (Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (ResizableWindow::backgroundColourId));
 
+    if (!processor.modulesLoaded())
+        paintLoading(g);
+    
     g.setColour (Colours::white);
     g.setFont (15.0f);
-    g.drawFittedText ("Hello World!", getLocalBounds(), Justification::centred, 1);
 }
 
 void MagentaBeatsAudioProcessorEditor::resized()
 {
-    test->setBounds(getLocalBounds());
+    Rectangle<int> area = getLocalBounds();
+    area = area.removeFromTop(getHeight() / 4);
+//    area.removeFromLeft(getWidth() / 12);
+    sequencerComponent1->setBounds(area);
+    
+    area = area.withY(getHeight() - area.getHeight());
+    sequencerComponent2->setBounds(area);
+}
+
+void MagentaBeatsAudioProcessorEditor::paintLoading(Graphics& g)
+{
+    g.setColour(Colours::white);
+    g.drawFittedText("Loading awesomeness...", getLocalBounds(), Justification::centred, 1);
 }
