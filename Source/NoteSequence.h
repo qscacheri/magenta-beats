@@ -7,14 +7,16 @@
 #include <iostream>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <array>
+#include "JuceHeader.h"
 
 namespace py = pybind11;
 
 class NoteSequence
 {
 public:
-    static int noteValues[8];
-
+//    static int noteValues[8];
+    static Array<int> noteValues;
     NoteSequence();
     
     NoteSequence(PyObject* pyNoteSequence);
@@ -22,8 +24,10 @@ public:
     int getTempo() { return tempo; }
 
     void addNote(Note n);
+    void addNote(int pitch, int startTime, int endTime, int velocity = 100);
     void removeNote(int pitch, int time);
     
+    bool isNotePresent(int pitch, int time);
     bool checkAndRemoveNote(int pitch, int time);
     
     std::vector<Note> getNotes();
@@ -34,7 +38,7 @@ public:
 private:
     int tempo = 120;
     std::vector<Note> notes;
-    
+    Array<Array<Note>> notes2;
     
 };
 #endif

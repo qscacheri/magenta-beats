@@ -29,6 +29,11 @@ using namespace pybind11::literals; // to bring in the `_a` literal
 class MagentaBeatsAudioProcessor  : public AudioProcessor
 {
 public:
+    enum SequencerType : int
+    {
+        userSeq = 1,
+        magentaSeq
+    };
     //==============================================================================
     MagentaBeatsAudioProcessor();
     ~MagentaBeatsAudioProcessor();
@@ -68,7 +73,11 @@ public:
 
     void runFunction();
     
-    Sequencer& getSequencer() { return sequencer; }
+    Sequencer& getSequencer(SequencerType which) {
+        if (which == SequencerType::userSeq)
+            return userSequencer;
+        return magentaSequencer;
+    }
     
     bool modulesLoaded() {
         if (magenta==nullptr)
@@ -83,8 +92,9 @@ private:
     NoteSequence pyNoteSequenceToNoteSequence(py::object p);
 
     // Sequencer object
-    Sequencer sequencer;
-    
+    Sequencer userSequencer;
+    Sequencer magentaSequencer;
+
     // py module for all processing
     PyObject* mainModule;
     

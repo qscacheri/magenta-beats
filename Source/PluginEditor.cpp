@@ -15,12 +15,12 @@
 MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeatsAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
-    sequencerComponent1.reset(new SequencerComponent(processor.getSequencer()));
+    sequencerComponent1.reset(new SequencerComponent(processor.getSequencer(MagentaBeatsAudioProcessor::SequencerType::userSeq)));
     sequencerComponent1->setLookAndFeel(&LookAndFeel::getDefaultLookAndFeel());
+    sequencerComponent1->setColour(SequencerComponent::ColourIds::beatColourOffId, Colour(0xff34d8eb));
     addAndMakeVisible(sequencerComponent1.get());
     
-    sequencerComponent2.reset(new SequencerComponent(processor.getSequencer()));
-    sequencerComponent2->setColour(SequencerComponent::ColourIds::beatColourOffId, Colour(0xff34d8eb));
+    sequencerComponent2.reset(new SequencerComponent(processor.getSequencer(MagentaBeatsAudioProcessor::SequencerType::magentaSeq), true));
     addAndMakeVisible(sequencerComponent2.get());
 
     test.reset(new TextButton());
@@ -51,7 +51,7 @@ void MagentaBeatsAudioProcessorEditor::paint (Graphics& g)
 void MagentaBeatsAudioProcessorEditor::resized()
 {
     Rectangle<int> area = getLocalBounds();
-    area = area.removeFromTop(getHeight() / 4);
+    area = area.removeFromTop(getHeight() / 2);
 //    area.removeFromLeft(getWidth() / 12);
     sequencerComponent1->setBounds(area);
     

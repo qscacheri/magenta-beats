@@ -13,12 +13,21 @@
 #include "qtils.h"
 
 //==============================================================================
-SequencerComponent::SequencerComponent(Sequencer &s) : sequencer(s)
+SequencerComponent::SequencerComponent(Sequencer &s, bool shouldFlip) : sequencer(s)
 {
+    
+    this->shouldFlip = shouldFlip;
+    
     setColour(ColourIds::backgroundColourId, Colours::black);
     setColour(ColourIds::beatColourOffId, Colours::magenta);
     setColour(ColourIds::beatColourOnId, Colours::magenta);
 
+    lengthSlider.reset(new Slider());
+    lengthSlider->setSliderStyle(Slider::SliderStyle::Rotary);
+    lengthSlider->setColour(Slider::ColourIds::rotarySliderFillColourId, findColour(ColourIds::beatColourOffId));
+    lengthSlider->setColour(Slider::ColourIds::backgroundColourId, Colours::white);
+
+    addAndMakeVisible(lengthSlider.get());
 }
 
 SequencerComponent::~SequencerComponent()
@@ -28,19 +37,32 @@ SequencerComponent::~SequencerComponent()
 void SequencerComponent::paint (Graphics& g)
 {
     g.fillAll(findColour(ColourIds::backgroundColourId));
-    
+    paintGrid(g);
+
+}
+
+void SequencerComponent::paintGrid(Graphics& g)
+{
+    NoteSequence* sequence = sequencer.getNoteSequence();
     int totalLength = sequencer.getTotalLength();
     float xDist = (float)getWidth() / totalLength;
-    float yDist = (float)getHeight() / 4;
+    float yDist = (float)getHeight() / 8;
     
     Rectangle<float> area(0, 0, xDist, yDist);
     
+    if (shouldFlip)
+        area = Rectangle<float>(0, getHeight() / 2, xDist, yDist);
+
     for (int rows = 0; rows < 4; rows++)
     {
         
         for (int cols = 0; cols < totalLength; cols++)
         {
             g.setColour(findColour(ColourIds::beatColourOffId));
+            if (sequence->isNotePresent(NoteSequence::noteValues[rows], cols))
+            {
+               g.fillRoundedRectangle(area.withSizeKeepingCentre(xDist * .9, yDist * .9), area.getWidth() / 3);
+            }
             qtils::drawRoundedRectInside(g, area.withSizeKeepingCentre(xDist * .9, yDist * .9), area.getWidth() / 3, 1.f);
             area.translate(xDist, 0);
         }
@@ -53,17 +75,25 @@ void SequencerComponent::paint (Graphics& g)
 
 void SequencerComponent::resized()
 {
-    // This method is where you should set the bounds of any child
-    // components that your component contains..
-
+    auto area = getLocalBounds();
+    if (shouldFlip)
+        area.removeFromBottom(getHeight() / 2);
+    else
+        area.removeFromTop(getHeight() / 2);
+    
+    area = area.withSizeKeepingCentre(area.getHeight(), area.getHeight());
+    lengthSlider->setBounds(area);
 }
+
 
 void SequencerComponent::mouseUp(const MouseEvent& e)
 {
     Component::mouseUp(e);
     std::pair<int, int> result = checkClick(e.getMouseDownPosition().toFloat());
+
     if (result.first !=-1)
     {
+        
         int pitch = NoteSequence::noteValues[result.first];
         int startTime = result.second;
 
@@ -76,6 +106,8 @@ void SequencerComponent::mouseUp(const MouseEvent& e)
         }
         DBG(sequence->toString());
     }
+    
+    repaint();
 }
 
 
@@ -83,11 +115,13 @@ std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
 {
     int totalLength = sequencer.getTotalLength();
     float xDist = getWidth() / totalLength;
-    float yDist = getHeight() / 4;
+    float yDist = getHeight() / 8;
     
     Rectangle<float> area(0, 0, xDist, yDist);
-    
-    for (int rows = 0; rows < 3; rows++)
+    if (shouldFlip)
+        area = Rectangle<float>(0, getHeight() / 2, xDist, yDist);
+
+    for (int rows = 0; rows < 4; rows++)
     {
         if (p.getY() > area.getBottom())
         {
@@ -107,5 +141,12 @@ std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
         }
     }
     return std::pair<int, int>(-1, -1);
+    
+}
+
+void SequencerComponent::colourChanged()
+{
+    if (isColourSpecified(ColourIds::beatColourOffId && lengthSlider != nullptr))
+        lengthSlider->setColour(Slider::ColourIds::rotarySliderFillColourId, findColour(ColourIds::beatColourOffId));
 }
 

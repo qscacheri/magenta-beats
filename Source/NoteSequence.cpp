@@ -2,9 +2,10 @@
 
 #include "NoteSequence.h"
 #include "python_utils.h"
-    
+
 using namespace pybind11::literals;
-int NoteSequence::noteValues[8] = {60, 62, 64, 65, 67, 69, 71, 72};
+
+Array<int> NoteSequence::noteValues({60, 62, 64, 65, 67, 69, 71, 72});
 
 //PYBIND11_MODULE(MagentaBeats, m) {
 //
@@ -18,11 +19,17 @@ int NoteSequence::noteValues[8] = {60, 62, 64, 65, 67, 69, 71, 72};
 //
 //}
 
-
+int noteSort(const Note &n1, const Note &n2)
+{
+    return n1.startTime < n2.startTime;
+}
 
 NoteSequence::NoteSequence()
 {
-
+    notes2.resize(4);
+    for (int i = 0; i < 4; i++){
+        notes2[i].resize(16);
+    }
 }
 
 NoteSequence::NoteSequence(PyObject* pyNoteSequence)
@@ -64,7 +71,15 @@ std::string NoteSequence::toString()
 void NoteSequence::addNote(Note n)
 {
     notes.push_back(n);
+    int which = noteValues.indexOf(n.pitch);
+    notes2[which][n.startTime] = n;
 }
+
+void NoteSequence::addNote(int pitch, int startTime, int endTime, int velocity)
+{
+    notes.push_back(Note(pitch, velocity, startTime, endTime));
+}
+
 
 void NoteSequence::removeNote(int pitch, int time)
 {
@@ -83,6 +98,18 @@ bool NoteSequence::checkAndRemoveNote(int pitch, int time)
         if (notes[i].pitch == pitch && notes[i].startTime == time)
         {
             notes.erase(notes.begin()+i);
+            return true;
+        }
+    }
+    return false;
+}
+
+bool NoteSequence::isNotePresent(int pitch, int time)
+{
+    for (int i = 0; i < notes.size(); i++)
+    {
+        if (notes[i].pitch == pitch && notes[i].startTime == time)
+        {
             return true;
         }
     }

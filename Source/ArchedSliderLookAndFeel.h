@@ -15,15 +15,15 @@ class ArchedSliderLookAndFeel
 {
 public:
     static void drawRotarySlider (Graphics &g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider &slider)
-    {
+    {        
         int w = slider.getWidth();
         int h = slider.getHeight();
         Path p;
         
         float outline = w / 6;
         
-        p.addArc(x, y, w, h, (rotaryStartAngle - M_PI/2.f),
-                 (rotaryEndAngle - M_PI/2.f), true);
+        p.addArc(0, 0, w, h, (rotaryStartAngle),
+                 (rotaryEndAngle), true);
         
         p.applyTransform(AffineTransform::scale(1.f - (outline / w), 1.f - (outline / h), w / 2, h / 2));
         g.setColour(slider.findColour(Slider::ColourIds::backgroundColourId));
@@ -31,8 +31,8 @@ public:
         p.clear();
         
         g.setColour(Colours::white);
-        p.addArc(x, y, w, h, (rotaryStartAngle - M_PI/2.f),
-                 (rotaryEndAngle - M_PI/2.f + sliderPosProportional * 4.84), true);
+        p.addArc(0, 0, w, h, (rotaryStartAngle),
+                 (rotaryStartAngle + sliderPosProportional * 4.84), true);
         p.applyTransform(AffineTransform::scale(1.f - (outline / w), 1.f - (outline / h), w / 2, h / 2));
         g.setColour(slider.findColour(Slider::ColourIds::rotarySliderFillColourId));
         g.strokePath(p, PathStrokeType(outline));
