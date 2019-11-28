@@ -19,17 +19,8 @@ MagentaBeatsAudioProcessor::MagentaBeatsAudioProcessor()
                        ), parameters(*this, nullptr, "PARAMETERS", createLayout())
 #endif
 {
-    Py_Initialize();
-//    magenta = py::module::import("magenta");
-//    magentaMusic = magenta.attr("music");
-//    music_pb2 = magenta.attr("protobuf").attr("music_pb2");
-//    py::object n = music_pb2.attr("NoteSequence");
     
-//    PyRun_SimpleString("import sys\n");
-//    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python\")\n");
-//    importThread.reset(new ImportThread("magenta_beats", mainModule, "import"));
-//    importThread->startThread();
-//    mainModule = PyImport_Import(PyUnicode_DecodeFSDefault("magenta_beats"));
+    Py_Initialize();
 }
 
 MagentaBeatsAudioProcessor::~MagentaBeatsAudioProcessor()
@@ -102,7 +93,7 @@ void MagentaBeatsAudioProcessor::changeProgramName (int index, const String& new
 //==============================================================================
 void MagentaBeatsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    
+    userSequencer.prepareToPlay(sampleRate);
 }
 
 void MagentaBeatsAudioProcessor::releaseResources()
@@ -137,31 +128,7 @@ bool MagentaBeatsAudioProcessor::isBusesLayoutSupported (const BusesLayout& layo
 
 void MagentaBeatsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    ScopedNoDenormals noDenormals;
-    auto totalNumInputChannels  = getTotalNumInputChannels();
-    auto totalNumOutputChannels = getTotalNumOutputChannels();
-
-    // In case we have more outputs than inputs, this code clears any output
-    // channels that didn't contain input data, (because these aren't
-    // guaranteed to be empty - they may contain garbage).
-    // This is here to avoid people getting screaming feedback
-    // when they first compile a plugin, but obviously you don't need to keep
-    // this code if your algorithm always overwrites all the output channels.
-    for (auto i = totalNumInputChannels; i < totalNumOutputChannels; ++i)
-        buffer.clear (i, 0, buffer.getNumSamples());
-
-    // This is the place where you'd normally do the guts of your plugin's
-    // audio processing...
-    // Make sure to reset the state if your inner loop is processing
-    // the samples and the outer loop is handling the channels.
-    // Alternatively, you can process the samples with the channels
-    // interleaved by keeping the same state.
-    for (int channel = 0; channel < totalNumInputChannels; ++channel)
-    {
-        auto* channelData = buffer.getWritePointer (channel);
-
-        // ..do something to the data...
-    }
+    userSequencer.processBlock(getPlayHead(), buffer, midiMessages);
 }
 
 //==============================================================================
@@ -178,15 +145,27 @@ AudioProcessorEditor* MagentaBeatsAudioProcessor::createEditor()
 //==============================================================================
 void MagentaBeatsAudioProcessor::getStateInformation (MemoryBlock& destData)
 {
-    // You should use this method to store your parameters in the memory block.
-    // You could do that either as raw data, or use the XML or ValueTree classes
-    // as intermediaries to make it easy to save and load complex data.
+    auto state = parameters.copyState();
+    if (state.hasType("note_sequence"))
+        state.getChildWithName("note_sequence").copyPropertiesFrom(userSequencer.getStateInformation(), nullptr);
+    
+    else
+        state.addChild(userSequencer.getStateInformation(), -1, nullptr);
+    
+    std::unique_ptr<XmlElement> xml (state.createXml());
+    copyXmlToBinary (*xml, destData);
 }
 
 void MagentaBeatsAudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
-    // You should use this method to restore your parameters from this memory block,
-    // whose contents will have been created by the getStateInformation() call.
+    std::unique_ptr<XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+    if (xmlState.get() != nullptr)
+        if (xmlState->hasTagName (parameters.state.getType()))
+            parameters.replaceState (ValueTree::fromXml (*xmlState));
+    DBG(ValueTree::fromXml (*xmlState).toXmlString());
+
+    ValueTree sequence = ValueTree::fromXml (*xmlState).getChildWithName("note_sequence");
+    userSequencer.setStateInformation(sequence);
 }
 
 void MagentaBeatsAudioProcessor::runFunction()
@@ -196,19 +175,33 @@ void MagentaBeatsAudioProcessor::runFunction()
 
 py::object MagentaBeatsAudioProcessor::noteSequenceToPyNoteSequence(NoteSequence n)
 {
-    int tempo = n.getTempo();
-    py::object pyNoteSequence = music_pb2.attr("NoteSequence");
+    py::object pyNoteSequence = music_pb2.attr("NoteSequence")();
     auto notes = n.getNotes();
     for (int i = 0; i < notes.size(); i++){
-        pyNoteSequence.attr("add")("pitch"_a=60);
+        int pitch = notes[i].pitch;
+        int velocity = notes[i].velocity;
+        double startTime = NoteSequence::ppqToSecs(notes[i].startTime, 120);
+        double endTime = NoteSequence::ppqToSecs(notes[i].startTime + 1, 120);
+        DBG(startTime);
+        pyNoteSequence.attr("notes").attr("add")("pitch"_a=pitch, "velocity"_a=velocity, "start_time"_a = startTime, "end_time"_a = endTime, "is_drum"_a=true);
+        
     }
+    pyNoteSequence.attr("tempos").attr("add")("qpm"_a = 120);
+    pyNoteSequence.attr("total_time") = NoteSequence::ppqToSecs(16, 120);
+
+    py::print(py::str(pyNoteSequence.attr("__str__")()));
     return pyNoteSequence;
     
 }
 
 NoteSequence MagentaBeatsAudioProcessor::pyNoteSequenceToNoteSequence(py::object p)
 {
-    return NoteSequence();
+    NoteSequence n;
+    
+    int numNotes = int(py::int_(p.attr("notes").attr("__len__")()));
+    DBG(numNotes);
+    
+    return n;
 }
 
 AudioProcessorValueTreeState::ParameterLayout MagentaBeatsAudioProcessor::createLayout()
@@ -217,7 +210,74 @@ AudioProcessorValueTreeState::ParameterLayout MagentaBeatsAudioProcessor::create
     return layout;
 }
 
+void MagentaBeatsAudioProcessor::initializeModel()
+{
+    /*
+     # Import dependencies.
+     from magenta.models.melody_rnn import melody_rnn_sequence_generator
+     from magenta.music import sequence_generator_bundle
+     from magenta.protobuf import generator_pb2
+     from magenta.protobuf import music_pb2
+     */
+        
+    py::object util = py::module::import("importlib").attr("util");
+    py::object spec = util.attr("spec_from_file_location")("melody_rnn_sequence_generator", "/usr/local/lib/python3.7/site-packages/magenta/models/melody_rnn/melody_rnn_sequence_generator.py");
+    py::object models = util.attr("module_from_spec")(spec);
+//    melody_rnn_sequence_generator = py::module::import("magenta").attr("models");
+    py::print(py::str(models.attr("__dir__")()));
+    sequence_generator_bundle =  py::module::import("magenta").attr("models").attr("protobuf").attr("sequence_generator_bundle");
 
+    generator_pb2 = py::module::import("magenta").attr("music").attr("protobuf").attr("generator_pb2");
+
+    /*
+    # Initialize the model.
+    print("Initializing Melody RNN...")
+    bundle = sequence_generator_bundle.read_bundle_file('/content/basic_rnn.mag')
+    generator_map = melody_rnn_sequence_generator.get_generator_map()
+    melody_rnn = generator_map['basic_rnn'](checkpoint=None, bundle=bundle)
+    *melody_rnn = generator_map.__getitem__('basic_rnn')(checkpoint=None, bundle=bundle)
+
+    melody_rnn.initialize()
+     */
+    
+    DBG("Initializing Melody RNN...");
+    bundle = sequence_generator_bundle.attr("read_bundle_file")("/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/models/basic_rnn.mag");
+    generator_map = melody_rnn_sequence_generator.attr("get_generator_map")();
+    melody_rnn = generator_map.attr("__getitem__")("basic_rnn").attr("__call__")("bundle"_a="bundle", "checkpoint"_a="None");
+
+}
+
+NoteSequence MagentaBeatsAudioProcessor::applyModel()
+{
+    
+    if (!modulesLoaded)
+        importModules();
+        
+    py::object sequence = noteSequenceToPyNoteSequence(*userSequencer.getNoteSequence());
+    py::print(py::str(sequence.attr("__str__")()));
+    
+    py::print(py::str(magenta_beats.attr("generateNewSequence").attr("__str__")()));
+    py::object newSequence = magenta_beats.attr("generateNewSequence")(sequence, 128, 1.0);
+    py::print(py::str(newSequence.attr("__str__")()));
+    
+    
+    
+    return pyNoteSequenceToNoteSequence(newSequence);
+}
+
+void MagentaBeatsAudioProcessor::importModules()
+{
+    magenta = py::module::import("magenta");
+    magentaMusic = magenta.attr("music");
+    music_pb2 = magenta.attr("protobuf").attr("music_pb2");
+    
+    PyRun_SimpleString("import sys\n");
+    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/testing\")\n");
+    
+    magenta_beats = py::module::import("make_sequence");
+    
+    modulesLoaded = true;
+}
 
 //==============================================================================
 // This creates new instances of the plugin..

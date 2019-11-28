@@ -18,4 +18,15 @@ public:
     
     virtual void drawRotarySlider (Graphics &g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider &slider) override;
 
+    virtual juce::Slider::SliderLayout getSliderLayout (Slider &) override;
+    
+   virtual Label* createSliderTextBox (Slider &s) override
+    {
+        Label* l = new Label();
+        l->setColour(Label::ColourIds::outlineColourId, Colours::transparentBlack);
+        l->setJustificationType(Justification::centred);
+        l->setInterceptsMouseClicks(false, false);
+
+        return l;
+    }
 };

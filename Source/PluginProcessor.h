@@ -34,6 +34,8 @@ public:
         userSeq = 1,
         magentaSeq
     };
+    
+    
     //==============================================================================
     MagentaBeatsAudioProcessor();
     ~MagentaBeatsAudioProcessor();
@@ -79,18 +81,25 @@ public:
         return magentaSequencer;
     }
     
-    bool modulesLoaded() {
-        if (magenta==nullptr)
-            return false;
-        return true;
+    bool areModulesLoaded() {
+        return modulesLoaded;
     }
+    
+    NoteSequence applyModel();
+
     AudioProcessorValueTreeState parameters;
 private:
+    
+    void importModules();
+    
     AudioProcessorValueTreeState::ParameterLayout createLayout();
     
     py::object noteSequenceToPyNoteSequence(NoteSequence n);
     NoteSequence pyNoteSequenceToNoteSequence(py::object p);
 
+    
+    void initializeModel();
+    
     // Sequencer object
     Sequencer userSequencer;
     Sequencer magentaSequencer;
@@ -102,9 +111,20 @@ private:
     py::object magenta;
     py::object magentaMusic;
     py::object music_pb2;
+    py::object melody_rnn_sequence_generator;
+    py::object sequence_generator_bundle;
+    py::object generator_pb2;
     
-    std::unique_ptr<NoteSequence> sequence;
+    // python objects
+    py::object bundle;
+    py::object generator_map;
+    py::object melody_rnn;
+    
+    py::object magenta_beats;
+    
     std::unique_ptr<ImportThread> importThread;
+    
+    bool modulesLoaded = false;
     
     // holder for look and feel
     LookAndFeelHolder<MagentaBeatsLookAndFeel> lafHolder;

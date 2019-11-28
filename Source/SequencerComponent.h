@@ -31,6 +31,8 @@ public:
     };
     
     
+    
+    
     SequencerComponent(Sequencer &s, bool shouldFlip = false );
     ~SequencerComponent();
 
@@ -50,6 +52,8 @@ public:
 private:
     Sequencer &sequencer;
     std::unique_ptr<Slider> lengthSlider;
+    
+    int selectedRow = 0;
     
     bool shouldFlip = false;
 

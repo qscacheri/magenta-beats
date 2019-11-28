@@ -1,46 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="hBhpKs" name="Magenta Beats" projectType="audioplug" jucerVersion="5.4.5"
-              headerPath="/anaconda3/include/python3.7m">
+              headerPath="/anaconda3/include/python3.7m" companyName="Quin Scacheri"
+              pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn"
+              pluginManufacturerCode="Qsca" pluginCode="Mgta" pluginAUMainType="'aumu'">
   <MAINGROUP id="VfqH7q" name="Magenta Beats">
-    <GROUP id="{FF6A15AA-533B-42C5-7880-D917D830B584}" name="Source"/>
-    <FILE id="vTMdVX" name="ArchedSliderLookAndFeel.h" compile="0" resource="0"
-          file="Source/ArchedSliderLookAndFeel.h"/>
-    <FILE id="a7FCk0" name="MagentaBeatsLookAndFeel.cpp" compile="1" resource="0"
-          file="Source/MagentaBeatsLookAndFeel.cpp"/>
-    <FILE id="mXIGhM" name="MagentaBeatsLookAndFeel.h" compile="0" resource="0"
-          file="Source/MagentaBeatsLookAndFeel.h"/>
-    <FILE id="XeL1bW" name="PluginEditor.cpp" compile="1" resource="0"
-          file="Source/PluginEditor.cpp"/>
-    <FILE id="HgHLkL" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
-    <FILE id="OgNAwM" name="PluginProcessor.cpp" compile="1" resource="0"
-          file="Source/PluginProcessor.cpp"/>
-    <FILE id="qEfc5w" name="PluginProcessor.h" compile="0" resource="0"
-          file="Source/PluginProcessor.h"/>
-    <FILE id="tKU1kR" name="Note.cpp" compile="1" resource="0" file="Source/Note.cpp"/>
-    <FILE id="y8btwl" name="Note.h" compile="0" resource="0" file="Source/Note.h"/>
-    <FILE id="FY6FYL" name="NoteSequence.cpp" compile="1" resource="0"
-          file="Source/NoteSequence.cpp"/>
-    <FILE id="hb9la9" name="NoteSequence.h" compile="0" resource="0" file="Source/NoteSequence.h"/>
-    <FILE id="Uo7ueC" name="python_utils.cpp" compile="1" resource="0"
-          file="Source/python_utils.cpp"/>
-    <FILE id="gfwIj8" name="python_utils.h" compile="0" resource="0" file="Source/python_utils.h"/>
-    <FILE id="mwwCs0" name="SequencerComponent.cpp" compile="1" resource="0"
-          file="Source/SequencerComponent.cpp"/>
-    <FILE id="Khg024" name="SequencerComponent.h" compile="0" resource="0"
-          file="Source/SequencerComponent.h"/>
-    <FILE id="j9LaSe" name="Sequencer.cpp" compile="1" resource="0" file="Source/Sequencer.cpp"/>
-    <FILE id="h8M9xm" name="Sequencer.h" compile="0" resource="0" file="Source/Sequencer.h"/>
-    <FILE id="P4ZTE7" name="ImportThread.cpp" compile="1" resource="0"
-          file="Source/ImportThread.cpp"/>
-    <FILE id="uRyRXQ" name="ImportThread.h" compile="0" resource="0" file="Source/ImportThread.h"/>
-    <FILE id="Ur25gZ" name="LookAndFeelHolder.h" compile="0" resource="0"
-          file="Source/LookAndFeelHolder.h"/>
-    <FILE id="mTSiOr" name="qtils.cpp" compile="1" resource="0" file="../../Libraries/qtils/qtils.cpp"/>
-    <FILE id="reqSdj" name="qtils.h" compile="0" resource="0" file="../../Libraries/qtils/qtils.h"/>
+    <GROUP id="{FF6A15AA-533B-42C5-7880-D917D830B584}" name="Source">
+      <FILE id="vTMdVX" name="ArchedSliderLookAndFeel.h" compile="0" resource="0"
+            file="Source/ArchedSliderLookAndFeel.h"/>
+      <FILE id="a7FCk0" name="MagentaBeatsLookAndFeel.cpp" compile="1" resource="0"
+            file="Source/MagentaBeatsLookAndFeel.cpp"/>
+      <FILE id="mXIGhM" name="MagentaBeatsLookAndFeel.h" compile="0" resource="0"
+            file="Source/MagentaBeatsLookAndFeel.h"/>
+      <FILE id="XeL1bW" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="HgHLkL" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+      <FILE id="OgNAwM" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="qEfc5w" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="tKU1kR" name="Note.cpp" compile="1" resource="0" file="Source/Note.cpp"/>
+      <FILE id="y8btwl" name="Note.h" compile="0" resource="0" file="Source/Note.h"/>
+      <FILE id="FY6FYL" name="NoteSequence.cpp" compile="1" resource="0"
+            file="Source/NoteSequence.cpp"/>
+      <FILE id="hb9la9" name="NoteSequence.h" compile="0" resource="0" file="Source/NoteSequence.h"/>
+      <FILE id="Uo7ueC" name="python_utils.cpp" compile="1" resource="0"
+            file="Source/python_utils.cpp"/>
+      <FILE id="gfwIj8" name="python_utils.h" compile="0" resource="0" file="Source/python_utils.h"/>
+      <FILE id="mwwCs0" name="SequencerComponent.cpp" compile="1" resource="0"
+            file="Source/SequencerComponent.cpp"/>
+      <FILE id="Khg024" name="SequencerComponent.h" compile="0" resource="0"
+            file="Source/SequencerComponent.h"/>
+      <FILE id="j9LaSe" name="Sequencer.cpp" compile="1" resource="0" file="Source/Sequencer.cpp"/>
+      <FILE id="h8M9xm" name="Sequencer.h" compile="0" resource="0" file="Source/Sequencer.h"/>
+      <FILE id="P4ZTE7" name="ImportThread.cpp" compile="1" resource="0"
+            file="Source/ImportThread.cpp"/>
+      <FILE id="uRyRXQ" name="ImportThread.h" compile="0" resource="0" file="Source/ImportThread.h"/>
+      <FILE id="Ur25gZ" name="LookAndFeelHolder.h" compile="0" resource="0"
+            file="Source/LookAndFeelHolder.h"/>
+      <FILE id="mTSiOr" name="qtils.cpp" compile="1" resource="0" file="../../Libraries/qtils/qtils.cpp"/>
+      <FILE id="reqSdj" name="qtils.h" compile="0" resource="0" file="../../Libraries/qtils/qtils.h"/>
+    </GROUP>
+    <GROUP id="{74E0CB7A-CBD5-17E7-6788-CCB784209281}" name="samples">
+      <FILE id="GDoHU0" name="closed.wav" compile="0" resource="1" file="samples/closed.wav"/>
+      <FILE id="hUQWfk" name="kick.wav" compile="0" resource="1" file="samples/kick.wav"/>
+      <FILE id="CJEOlH" name="open.wav" compile="0" resource="1" file="samples/open.wav"/>
+      <FILE id="cuFG6N" name="snare.wav" compile="0" resource="1" file="samples/snare.wav"/>
+    </GROUP>
+    <GROUP id="{AA9359A1-EEC4-9967-3E8A-B0FA67E80755}" name="assets">
+      <GROUP id="{89F697A8-89B5-3765-A78D-AF12B4CA8E45}" name="fonts">
+        <FILE id="hJeYBn" name="JosefinSans-Light.ttf" compile="0" resource="1"
+              file="assets/fonts/JosefinSans-Light.ttf"/>
+      </GROUP>
+      <GROUP id="{D3DF8B67-C961-7199-6E30-23E97F22269C}" name="graphics">
+        <FILE id="egUTeB" name="down_arrow.png" compile="0" resource="1" file="assets/graphics/down_arrow.png"/>
+        <FILE id="LgukAB" name="up_arrow.png" compile="0" resource="1" file="assets/graphics/up_arrow.png"/>
+        <FILE id="OUeMw1" name="flame.svg" compile="0" resource="1" file="assets/graphics/flame.svg"/>
+        <FILE id="Z2PgyH" name="snow_flake.svg" compile="0" resource="1" file="assets/graphics/snow_flake.svg"/>
+      </GROUP>
+    </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="python3.7m&#10;boost_python3&#10;"
+    <XCODE_MAC targetFolder="Builds/MacOSX" externalLibraries="python3.7m&#10;"
                extraCompilerFlags="-I/Users/quinscacheri/Documents/dev/Libraries/boost"
                extraLinkerFlags="-L/Users/quinscacheri/Documents/dev/Libraries/boost/stage/lib &#10;&#10;&#10;">
       <CONFIGURATIONS>

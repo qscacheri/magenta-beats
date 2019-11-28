@@ -26,8 +26,6 @@ SequencerComponent::SequencerComponent(Sequencer &s, bool shouldFlip) : sequence
     lengthSlider->setSliderStyle(Slider::SliderStyle::Rotary);
     lengthSlider->setColour(Slider::ColourIds::rotarySliderFillColourId, findColour(ColourIds::beatColourOffId));
     lengthSlider->setColour(Slider::ColourIds::backgroundColourId, Colours::white);
-
-    addAndMakeVisible(lengthSlider.get());
 }
 
 SequencerComponent::~SequencerComponent()
@@ -38,7 +36,6 @@ void SequencerComponent::paint (Graphics& g)
 {
     g.fillAll(findColour(ColourIds::backgroundColourId));
     paintGrid(g);
-
 }
 
 void SequencerComponent::paintGrid(Graphics& g)
@@ -46,13 +43,10 @@ void SequencerComponent::paintGrid(Graphics& g)
     NoteSequence* sequence = sequencer.getNoteSequence();
     int totalLength = sequencer.getTotalLength();
     float xDist = (float)getWidth() / totalLength;
-    float yDist = (float)getHeight() / 8;
+    float yDist = (float)getHeight() / 4;
     
     Rectangle<float> area(0, 0, xDist, yDist);
     
-    if (shouldFlip)
-        area = Rectangle<float>(0, getHeight() / 2, xDist, yDist);
-
     for (int rows = 0; rows < 4; rows++)
     {
         
@@ -70,6 +64,11 @@ void SequencerComponent::paintGrid(Graphics& g)
         area.translate(0, yDist);
         area.setX(0);
     }
+    Rectangle<float> selectedRowArea(0, 0, getWidth(), getHeight() / 8);
+    
+    selectedRowArea.translate(0, yDist * selectedRow);
+    g.setColour(Colours::white.withAlpha(.4f));
+
 
 }
 
@@ -82,7 +81,7 @@ void SequencerComponent::resized()
         area.removeFromTop(getHeight() / 2);
     
     area = area.withSizeKeepingCentre(area.getHeight(), area.getHeight());
-    lengthSlider->setBounds(area);
+//    lengthSlider->setBounds(area);
 }
 
 
@@ -104,7 +103,6 @@ void SequencerComponent::mouseUp(const MouseEvent& e)
         {
             sequence->addNote(Note(pitch, 100, startTime, startTime + 1));
         }
-        DBG(sequence->toString());
     }
     
     repaint();
@@ -115,11 +113,9 @@ std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
 {
     int totalLength = sequencer.getTotalLength();
     float xDist = getWidth() / totalLength;
-    float yDist = getHeight() / 8;
+    float yDist = getHeight() / 4;
     
     Rectangle<float> area(0, 0, xDist, yDist);
-    if (shouldFlip)
-        area = Rectangle<float>(0, getHeight() / 2, xDist, yDist);
 
     for (int rows = 0; rows < 4; rows++)
     {
@@ -137,7 +133,10 @@ std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
             }
 
             if (area.contains(p))
+            {
+                selectedRow = rows;
                 return std::pair<int, int>(rows, cols);
+            }
         }
     }
     return std::pair<int, int>(-1, -1);

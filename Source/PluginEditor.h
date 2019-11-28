@@ -30,6 +30,16 @@ public:
 private:
     std::unique_ptr<SequencerComponent> sequencerComponent1;
     std::unique_ptr<SequencerComponent> sequencerComponent2;
+    
+    std::unique_ptr<DrawableButton> createMagentaButton;
+    std::unique_ptr<DrawableButton> recycleButton;
+
+    std::unique_ptr<Slider> temperatureSlider;
+    
+    std::unique_ptr<Drawable> snowflake;
+    std::unique_ptr<Drawable> flame;
+
+    Font defaultFont;
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.
     MagentaBeatsAudioProcessor& processor;

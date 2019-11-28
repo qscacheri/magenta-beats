@@ -5,7 +5,7 @@
 
 using namespace pybind11::literals;
 
-Array<int> NoteSequence::noteValues({60, 62, 64, 65, 67, 69, 71, 72});
+Array<int> NoteSequence::noteValues({36, 38, 42, 46});
 
 //PYBIND11_MODULE(MagentaBeats, m) {
 //
@@ -31,31 +31,6 @@ NoteSequence::NoteSequence()
         notes2[i].resize(16);
     }
 }
-
-NoteSequence::NoteSequence(PyObject* pyNoteSequence)
-{
-
-//    if (!PyObject_HasAttrString(pyNoteSequence, "notes"))
-//        return;
-//
-//    tempo = getTempo(pyNoteSequence);
-//
-//    notes = notesFromPy(pyNoteSequence);
-//
-//    Py_DECREF(pyNoteSequence);
-//
-//    std::cout << toString() << '\n';
-}
-
-//int NoteSequence::getTempo(PyObject* py)
-//{
-//    PyObject* pyTempos = PyObject_GetAttrString(py, "tempos");
-//    PyObject* callable = PyObject_GetAttrString(pyTempos, "__getitem__");
-//    PyObject* args = Py_BuildValue("(i)", 0);
-//    return (int)PyLong_AsLong(PyObject_GetAttrString(PyObject_Call(callable, args, NULL),"qpm"));
-//}
-
-
 
 std::string NoteSequence::toString()
 {
@@ -121,7 +96,45 @@ std::vector<Note> NoteSequence::getNotes()
     return notes;
 }
 
+ValueTree NoteSequence::toValueTree()
+{
+    ValueTree tree { "note_sequence", {{ "length", getLength() }},
+      {
+      }
+    };
+    
+    for (int i = 0; i < getLength(); i++){
+        ValueTree noteTree { "Note", {{ "pitch", notes[i].pitch}, { "start_time", notes[i].startTime}, { "velocity", notes[i].velocity}},
+          {
+          }
+        };
+        
+        tree.addChild(noteTree, -1, nullptr);
+    }
+    
+    return tree;
+}
+
+void NoteSequence::fromValueTree(ValueTree tree)
+{
+    for (int i = 0; i < tree.getNumChildren(); i++){
+        
+        int pitch = tree.getChild(i).getPropertyAsValue("pitch", nullptr).getValue();
+        int velocity = tree.getChild(i).getPropertyAsValue("velocity", nullptr).getValue();
+        int startTime = tree.getChild(i).getPropertyAsValue("start_time", nullptr).getValue();
+        
+        notes.push_back(Note(pitch, velocity, startTime, startTime + 1));
+    }
+}
+
+
 double NoteSequence::ppqToSecs(int ppq, int tempo)
 {
-    return (60000.0 / (tempo * ppq));
+    return (double)ppq * (15.f / double(tempo));
 }
+
+int NoteSequence::ppqToSamples(int ppq, int tempo, double sampleRate)
+{
+    return ((int)((60.0/tempo*sampleRate) / 4 * ppq));
+}
+
