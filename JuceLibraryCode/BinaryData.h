@@ -35,8 +35,14 @@ namespace BinaryData
     extern const char*   snow_flake_svg;
     const int            snow_flake_svgSize = 8923;
 
+    extern const char*   magenta_on_svg;
+    const int            magenta_on_svgSize = 636;
+
+    extern const char*   user_on_svg;
+    const int            user_on_svgSize = 633;
+
     // Number of elements in the namedResourceList and originalFileNames arrays.
-    const int namedResourceListSize = 9;
+    const int namedResourceListSize = 11;
 
     // Points to the start of a list of resource names.
     extern const char* namedResourceList[];

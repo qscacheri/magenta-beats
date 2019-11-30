@@ -54,7 +54,7 @@ def generateNewSequence(input_sequence, temperature, write_to_file):
     last_end_time = (max(n.end_time for n in input_sequence.notes)
                       if input_sequence.notes else 0)
 #    total_seconds = num_steps * input_sequence.quantization_info.steps_per_quarter;
-
+    
     generator_options = generator_pb2.GeneratorOptions()
     generator_options.args['temperature'].float_value = temperature
     generate_section = generator_options.generate_sections.add(start_time=last_end_time, end_time=8.0)

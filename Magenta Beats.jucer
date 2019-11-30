@@ -57,6 +57,8 @@
         <FILE id="LgukAB" name="up_arrow.png" compile="0" resource="1" file="assets/graphics/up_arrow.png"/>
         <FILE id="OUeMw1" name="flame.svg" compile="0" resource="1" file="assets/graphics/flame.svg"/>
         <FILE id="Z2PgyH" name="snow_flake.svg" compile="0" resource="1" file="assets/graphics/snow_flake.svg"/>
+        <FILE id="f2PTmy" name="magenta_on.svg" compile="0" resource="1" file="assets/graphics/magenta_on.svg"/>
+        <FILE id="cuuFA2" name="user_on.svg" compile="0" resource="1" file="assets/graphics/user_on.svg"/>
       </GROUP>
     </GROUP>
   </MAINGROUP>

@@ -19,6 +19,8 @@
 class MagentaBeatsAudioProcessorEditor  : public AudioProcessorEditor, public Slider::Listener
 {
 public:
+    static int sequencerSelect;
+    
     MagentaBeatsAudioProcessorEditor (MagentaBeatsAudioProcessor&);
     ~MagentaBeatsAudioProcessorEditor();
 
@@ -42,6 +44,11 @@ private:
     std::unique_ptr<Drawable> snowflake;
     std::unique_ptr<Drawable> flame;
 
+    std::unique_ptr<ShapeButton> userButton;
+    std::unique_ptr<ShapeButton> magentaButton;
+
+    std::unique_ptr<DrawableButton> sequencerSelectButton;
+    
     Font defaultFont;
     // This reference is provided as a quick way for your editor to
     // access the processor object that created it.

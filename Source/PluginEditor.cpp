@@ -11,16 +11,21 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+int MagentaBeatsAudioProcessorEditor::sequencerSelect = 1;
+
 //==============================================================================
 MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeatsAudioProcessor& p)
     : AudioProcessorEditor (&p), processor (p)
 {
+    Colour userColour = Colour(0xff34d8eb);
+    Colour magentaColour = Colours::magenta;
     sequencerComponent1.reset(new SequencerComponent(processor.getSequencer(MagentaBeatsAudioProcessor::SequencerType::userSeq)));
     sequencerComponent1->setLookAndFeel(&LookAndFeel::getDefaultLookAndFeel());
     sequencerComponent1->setColour(SequencerComponent::ColourIds::beatColourOffId, Colour(0xff34d8eb));
     addAndMakeVisible(sequencerComponent1.get());
     
     sequencerComponent2.reset(new SequencerComponent(processor.getSequencer(MagentaBeatsAudioProcessor::SequencerType::magentaSeq), true));
+    sequencerComponent2->isSelected = false;
     addAndMakeVisible(sequencerComponent2.get());
 
     test.reset(new TextButton());
@@ -65,6 +70,40 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
     
     defaultFont = Font(Typeface::createSystemTypefaceFor(BinaryData::JosefinSansLight_ttf, BinaryData::JosefinSansLight_ttfSize));
 
+    Path path;
+    path.addEllipse(0, 0, 10, 10);
+    
+    userButton.reset(new ShapeButton("userSelect", userColour.darker(.5f), userColour.darker(.5f), userColour));
+    userButton->setOnColours(userColour, userColour, userColour);
+    userButton->shouldUseOnColours(true);
+    userButton->setShape(path, true, true, true);
+    userButton->setRadioGroupId(1);
+    userButton->addListener(sequencerComponent1.get());
+    userButton->setClickingTogglesState(true);
+    userButton->setToggleState(true, NotificationType::dontSendNotification);
+    addAndMakeVisible(userButton.get());
+    
+    magentaButton.reset(new ShapeButton("userSelect", magentaColour.darker(.5f), magentaColour.darker(.5f), magentaColour));
+    magentaButton->setOnColours(magentaColour, magentaColour, magentaColour);
+    magentaButton->shouldUseOnColours(true);
+    magentaButton->setShape(path, true, true, true);
+    magentaButton->setRadioGroupId(1);
+    magentaButton->addListener(sequencerComponent2.get());
+    magentaButton->setClickingTogglesState(true);
+    addAndMakeVisible(magentaButton.get());
+
+    std::unique_ptr<Drawable> userImage = Drawable::createFromImageData(BinaryData::user_on_svg, BinaryData::user_on_svgSize);
+    std::unique_ptr<Drawable> magentaImage =  Drawable::createFromImageData(BinaryData::magenta_on_svg, BinaryData::magenta_on_svgSize);
+
+    sequencerSelectButton.reset(new DrawableButton("sequencerSelect", DrawableButton::ButtonStyle::ImageFitted));
+    sequencerSelectButton->setClickingTogglesState(true);
+    sequencerSelectButton->setImages(userImage.get(), nullptr, nullptr, nullptr, magentaImage.get());
+    sequencerSelectButton->onStateChange = [&]{
+        sequencerComponent1->isSelected = !sequencerSelectButton->getToggleState();
+        sequencerComponent2->isSelected = sequencerSelectButton->getToggleState();
+    };
+    addAndMakeVisible(sequencerSelectButton.get());
+    
     setSize (1200, 800);
 }
 
@@ -133,6 +172,15 @@ void MagentaBeatsAudioProcessorEditor::resized()
     area = area.withSizeKeepingCentre(area.getWidth(), area.getWidth());
     temperatureSlider->setBounds(area);
     
+    area = area.withSizeKeepingCentre(area.getWidth() * .45, area.getWidth() * .45);
+    sequencerSelectButton->setBounds(area);
+    
+    area = temperatureSlider->getBounds();
+    area.translate(area.getWidth(), 0);
+    area = area.withSizeKeepingCentre(area.getWidth() * .25, area.getWidth() * .25);
+//    sequencerSelectButton->setBounds(area);
+
+
 }
 
 void MagentaBeatsAudioProcessorEditor::paintLoading(Graphics& g)

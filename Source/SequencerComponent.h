@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class SequencerComponent : public Component
+class SequencerComponent : public Component, public Timer, public Button::Listener
 {
 public:
     
@@ -29,9 +29,6 @@ public:
         beatColourOnId,
         playheadColourId
     };
-    
-    
-    
     
     SequencerComponent(Sequencer &s, bool shouldFlip = false );
     ~SequencerComponent();
@@ -48,7 +45,13 @@ public:
     
     std::pair<int, int> checkClick(Point<float> p);
 
+    void timerCallback() override;
     
+    // button listener
+    void buttonClicked(Button* b) override;
+    void buttonStateChanged(Button* b) override;
+    
+    bool isSelected = true;
 private:
     Sequencer &sequencer;
     std::unique_ptr<Slider> lengthSlider;
@@ -56,6 +59,11 @@ private:
     int selectedRow = 0;
     
     bool shouldFlip = false;
-
+    
+    StringArray voiceNames;
+    
+    float gridPhase = 0;
+    float gridDirection = 1;
+    
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SequencerComponent)
 };

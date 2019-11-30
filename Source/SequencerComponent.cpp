@@ -11,13 +11,24 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SequencerComponent.h"
 #include "qtils.h"
-#define NUM_VOICES 4
+#define NUM_VOICES 6
 //==============================================================================
 SequencerComponent::SequencerComponent(Sequencer &s, bool shouldFlip) : sequencer(s)
 {
     
+    setOpaque(true);
+    
     this->shouldFlip = shouldFlip;
     
+    startTimerHz(15);
+    
+    voiceNames.add("KICK");
+    voiceNames.add("SNARE");
+    voiceNames.add("HH-CLOSED");
+    voiceNames.add("HH-OPEN");
+    voiceNames.add("CRASH");
+    voiceNames.add("CLAP");
+
     setColour(ColourIds::backgroundColourId, Colours::black);
     setColour(ColourIds::beatColourOffId, Colours::magenta);
     setColour(ColourIds::beatColourOnId, Colours::magenta);
@@ -36,16 +47,18 @@ void SequencerComponent::paint (Graphics& g)
 {
     g.fillAll(findColour(ColourIds::backgroundColourId));
     paintGrid(g);
+    
+//    g.fillAll(Colours::black.withAlpha((.7f)));
 }
 
 void SequencerComponent::paintGrid(Graphics& g)
 {
     NoteSequence* sequence = sequencer.getNoteSequence();
     int totalLength = sequencer.getTotalLength();
-    float xDist = (float)getWidth() / totalLength;
+    float xDist = (float)getWidth() / (totalLength + 1);
     float yDist = (float)getHeight() / NUM_VOICES;
     
-    Rectangle<float> area(0, 0, xDist, yDist);
+    Rectangle<float> area(xDist, 0, xDist, yDist);
     
     for (int rows = 0; rows < NUM_VOICES; rows++)
     {
@@ -62,14 +75,35 @@ void SequencerComponent::paintGrid(Graphics& g)
         }
         
         area.translate(0, yDist);
-        area.setX(0);
+        area.setX(xDist);
     }
     Rectangle<float> selectedRowArea(0, 0, getWidth(), getHeight() / 8);
     
     selectedRowArea.translate(0, yDist * selectedRow);
     g.setColour(Colours::white.withAlpha(.4f));
 
+    area.setBounds(0, 0, xDist, yDist);
 
+    if (isSelected)
+    {
+        for (int i = 0; i < NUM_VOICES; i++)
+        {
+            g.setColour(Colours::white);
+            g.drawFittedText(voiceNames[i], area.toNearestInt(), Justification::right, 1);
+            g.setColour(Colours::white.withAlpha(gridPhase));
+            g.drawRect(0.0, area.getY(), float(getWidth()), 1.f);
+            area.translate(0, yDist);
+        }
+        
+        g.drawRect(0.0, area.getY() - 1.f, float(getWidth()), 1.f);
+        
+        if (gridPhase + .05 * gridDirection >= 1 || gridPhase + .05 * gridDirection <= 0)
+        {
+            gridDirection *= -1;
+        }
+        
+        gridPhase += gridDirection * .05;
+    }
 }
 
 void SequencerComponent::resized()
@@ -112,10 +146,10 @@ void SequencerComponent::mouseUp(const MouseEvent& e)
 std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
 {
     int totalLength = sequencer.getTotalLength();
-    float xDist = getWidth() / totalLength;
+    float xDist = getWidth() / (totalLength + 1);
     float yDist = getHeight() / NUM_VOICES;
     
-    Rectangle<float> area(0, 0, xDist, yDist);
+    Rectangle<float> area(xDist, 0, xDist, yDist);
 
     for (int rows = 0; rows < NUM_VOICES; rows++)
     {
@@ -149,3 +183,20 @@ void SequencerComponent::colourChanged()
         lengthSlider->setColour(Slider::ColourIds::rotarySliderFillColourId, findColour(ColourIds::beatColourOffId));
 }
 
+void SequencerComponent::timerCallback()
+{
+    repaint();
+}
+
+void SequencerComponent::buttonClicked(Button* b)
+{
+    
+}
+
+void SequencerComponent::buttonStateChanged(Button* b)
+{
+    if (b->getToggleStateValue() == true)
+        isSelected = true;
+    else
+        isSelected = false;
+}

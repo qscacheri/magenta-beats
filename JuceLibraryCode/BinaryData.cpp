@@ -3726,6 +3726,22 @@ static const unsigned char temp_binary_data_8[] =
 
 const char* snow_flake_svg = (const char*) temp_binary_data_8;
 
+//================== magenta_on.svg ==================
+static const unsigned char temp_binary_data_9[] =
+"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 172.95 172.95\"><defs><style>.a{fill:aqua;}.a,.c{stroke:#f0f;}.a,.b,.c{stroke-linecap:round;stroke-linejoin:round;}.b{fill:#f0f;stroke:aqua;}.c{fill:none;}</style></defs><title>magenta_on</title"
+"><circle class=\"a\" cx=\"86.48\" cy=\"86.48\" r=\"85.98\"/><polyline class=\"b\" points=\"122.02 108.51 79.94 148.88 79.94 29.14 122.06 69.55\"/><rect class=\"b\" x=\"122.06\" y=\"69.53\" width=\"19.65\" height=\"38.96\"/><path class=\"c\" d=\"M69.4"
+"7,108.44a32.57,32.57,0,0,1,0-38.86\"/><path class=\"c\" d=\"M59.27,117.15a51.84,51.84,0,0,1,0-61.88\"/><path class=\"c\" d=\"M45.23,128.44a70.72,70.72,0,0,1,0-84.45\"/></svg>";
+
+const char* magenta_on_svg = (const char*) temp_binary_data_9;
+
+//================== user_on.svg ==================
+static const unsigned char temp_binary_data_10[] =
+"<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 172.95 172.95\"><defs><style>.a{fill:#f0f;}.a,.c{stroke:aqua;}.a,.b,.c{stroke-linecap:round;stroke-linejoin:round;}.b{fill:aqua;stroke:#f0f;}.c{fill:none;}</style></defs><title>user_on</title><c"
+"ircle class=\"a\" cx=\"86.48\" cy=\"86.48\" r=\"85.98\"/><polyline class=\"b\" points=\"122.02 108.51 79.94 148.88 79.94 29.14 122.06 69.55\"/><rect class=\"b\" x=\"122.06\" y=\"69.53\" width=\"19.65\" height=\"38.96\"/><path class=\"c\" d=\"M69.47,1"
+"08.44a32.57,32.57,0,0,1,0-38.86\"/><path class=\"c\" d=\"M59.27,117.15a51.84,51.84,0,0,1,0-61.88\"/><path class=\"c\" d=\"M45.23,128.44a70.72,70.72,0,0,1,0-84.45\"/></svg>";
+
+const char* user_on_svg = (const char*) temp_binary_data_10;
+
 
 const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
 {
@@ -3746,6 +3762,8 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes)
         case 0x125dec4f:  numBytes = 9201; return up_arrow_png;
         case 0xb13c0b58:  numBytes = 1594; return flame_svg;
         case 0xd4577e5e:  numBytes = 8923; return snow_flake_svg;
+        case 0x49c0385a:  numBytes = 636; return magenta_on_svg;
+        case 0xefde3af8:  numBytes = 633; return user_on_svg;
         default: break;
     }
 
@@ -3763,7 +3781,9 @@ const char* namedResourceList[] =
     "down_arrow_png",
     "up_arrow_png",
     "flame_svg",
-    "snow_flake_svg"
+    "snow_flake_svg",
+    "magenta_on_svg",
+    "user_on_svg"
 };
 
 const char* originalFilenames[] =
@@ -3776,7 +3796,9 @@ const char* originalFilenames[] =
     "down_arrow.png",
     "up_arrow.png",
     "flame.svg",
-    "snow_flake.svg"
+    "snow_flake.svg",
+    "magenta_on.svg",
+    "user_on.svg"
 };
 
 const char* getNamedResourceOriginalFilename (const char* resourceNameUTF8)
