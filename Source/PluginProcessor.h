@@ -88,6 +88,9 @@ public:
     NoteSequence applyModel();
 
     AudioProcessorValueTreeState parameters;
+    
+    float temperatureParam = 1;
+    
 private:
     
     void importModules();
@@ -95,7 +98,7 @@ private:
     AudioProcessorValueTreeState::ParameterLayout createLayout();
     
     py::object noteSequenceToPyNoteSequence(NoteSequence n);
-    NoteSequence pyNoteSequenceToNoteSequence(py::object p);
+    NoteSequence* pyNoteSequenceToNoteSequence(py::object p);
 
     
     void initializeModel();

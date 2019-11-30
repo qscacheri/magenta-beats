@@ -55,7 +55,7 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
     temperatureSlider->setSliderStyle(Slider::SliderStyle::Rotary);
     temperatureSlider->setColour(Slider::ColourIds::rotarySliderFillColourId, Colours::magenta);
     temperatureSlider->setColour(Slider::ColourIds::backgroundColourId, Colour(0xff34d8eb));
-    temperatureSlider->setRange(0, 100, 1);
+    temperatureSlider->setRange(0, 100.0);
     temperatureSlider->setTextValueSuffix("%");
     addAndMakeVisible(temperatureSlider.get());
     
@@ -139,4 +139,9 @@ void MagentaBeatsAudioProcessorEditor::paintLoading(Graphics& g)
 {
     g.setColour(Colours::white);
     g.drawFittedText("Loading awesomeness...", getLocalBounds(), Justification::centred, 1);
+}
+
+void MagentaBeatsAudioProcessorEditor::sliderValueChanged(Slider* s)
+{
+    processor.temperatureParam = s->getValue();
 }

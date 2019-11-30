@@ -194,13 +194,22 @@ py::object MagentaBeatsAudioProcessor::noteSequenceToPyNoteSequence(NoteSequence
     
 }
 
-NoteSequence MagentaBeatsAudioProcessor::pyNoteSequenceToNoteSequence(py::object p)
+NoteSequence* MagentaBeatsAudioProcessor::pyNoteSequenceToNoteSequence(py::object p)
 {
-    NoteSequence n;
+    NoteSequence* n = new NoteSequence();
     
     int numNotes = int(py::int_(p.attr("notes").attr("__len__")()));
-    DBG(numNotes);
+    int pitch, velocity, startTime, endTime;
     
+    for (int i = 0; i < numNotes; i++){
+        py::object note = p.attr("notes").attr("__getitem__")(i);
+        pitch = int(py::int_(note.attr("pitch")));
+        velocity = int(py::int_(note.attr("velocity")));
+        startTime = int(py::int_(note.attr("quantized_start_step"))) % 16;
+        endTime = int(py::int_(note.attr("quantized_end_step"))) % 16;
+        py::print(py::str(note));
+        n->addNote(Note(pitch, velocity, startTime, endTime));
+    }
     return n;
 }
 
@@ -257,12 +266,11 @@ NoteSequence MagentaBeatsAudioProcessor::applyModel()
     py::print(py::str(sequence.attr("__str__")()));
     
     py::print(py::str(magenta_beats.attr("generateNewSequence").attr("__str__")()));
-    py::object newSequence = magenta_beats.attr("generateNewSequence")(sequence, 128, 1.0);
+    py::object newSequence = magenta_beats.attr("generateNewSequence")(sequence, temperatureParam, 1);
     py::print(py::str(newSequence.attr("__str__")()));
     
-    
-    
-    return pyNoteSequenceToNoteSequence(newSequence);
+    magentaSequencer.setNewSequence(pyNoteSequenceToNoteSequence(newSequence));
+    return *pyNoteSequenceToNoteSequence(newSequence);
 }
 
 void MagentaBeatsAudioProcessor::importModules()
@@ -272,9 +280,8 @@ void MagentaBeatsAudioProcessor::importModules()
     music_pb2 = magenta.attr("protobuf").attr("music_pb2");
     
     PyRun_SimpleString("import sys\n");
-    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/testing\")\n");
-    
-    magenta_beats = py::module::import("make_sequence");
+    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/\")\n");
+    magenta_beats = py::module::import("magenta_beats");
     
     modulesLoaded = true;
 }

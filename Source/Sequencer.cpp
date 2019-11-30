@@ -12,6 +12,8 @@
 
 Sequencer::Sequencer()
 {
+    sequence.reset(new NoteSequence());
+    
     formatManager.registerBasicFormats();
     sampler.clearVoices();
     for (int i = 0; i < 4; i++){
@@ -76,13 +78,13 @@ void Sequencer::addToBufferIfNeeded(int which, int samplesPerBlock, MidiBuffer &
         return;
     long long posInSamples = currentPos.timeInSamples;
     posInSamples %= NoteSequence::ppqToSamples(16, 120, lastSampleRate);
-    auto notes = sequence.getNotes();
+    auto notes = sequence->getNotes();
     
-    int loopEnd = NoteSequence::ppqToSamples(16, sequence.getTempo(), lastSampleRate);
+    int loopEnd = NoteSequence::ppqToSamples(16, sequence->getTempo(), lastSampleRate);
     
     // iterate through all notes
     for (int i = 0; i < notes.size(); i++){
-        int beatInSamples = NoteSequence::ppqToSamples(notes[i].startTime, sequence.getTempo(), lastSampleRate);
+        int beatInSamples = NoteSequence::ppqToSamples(notes[i].startTime, sequence->getTempo(), lastSampleRate);
         
         // check first beat
         if (posInSamples + samplesPerBlock >= loopEnd && posInSamples <= loopEnd && notes[i].startTime == 0)
@@ -105,10 +107,34 @@ void Sequencer::addToBufferIfNeeded(int which, int samplesPerBlock, MidiBuffer &
 
 ValueTree Sequencer::getStateInformation()
 {
-    return sequence.toValueTree();
+    return sequence->toValueTree();
 }
 
 void Sequencer::setStateInformation(ValueTree tree)
 {
-    sequence.fromValueTree(tree);
+    sequence->fromValueTree(tree);
+}
+
+void Sequencer::setNewSequence(NoteSequence* newSequence)
+{
+    sequence.reset(newSequence);
+    for (int i = 0; i < listeners.size(); i++)
+    {
+        MessageManager::callAsync([&]{ listeners[i]->sequenceChanged(); });
+        
+    }
+}
+
+void Sequencer::addListener(SequencerListener* l)
+{
+    listeners.push_back(l);
+}
+
+void Sequencer::removeListener(SequencerListener* l)
+{
+    for (int i = 0; i < listeners.size(); i++)
+    {
+        if (listeners[i] == l)
+            listeners.erase(listeners.begin()+i);
+    }
 }

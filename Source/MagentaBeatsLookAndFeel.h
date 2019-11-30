@@ -16,11 +16,13 @@ class  MagentaBeatsLookAndFeel : public LookAndFeel_V4
 {
 public:
     
+    MagentaBeatsLookAndFeel();
+    
     virtual void drawRotarySlider (Graphics &g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider &slider) override;
 
     virtual juce::Slider::SliderLayout getSliderLayout (Slider &) override;
     
-   virtual Label* createSliderTextBox (Slider &s) override
+    virtual Label* createSliderTextBox (Slider &s) override
     {
         Label* l = new Label();
         l->setColour(Label::ColourIds::outlineColourId, Colours::transparentBlack);
@@ -29,4 +31,6 @@ public:
 
         return l;
     }
+    
+//    virtual void drawAlertBox (Graphics &, AlertWindow &, const Rectangle< int > &textArea, TextLayout &);
 };

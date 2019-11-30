@@ -10,6 +10,11 @@
 
 #include "MagentaBeatsLookAndFeel.h"
 
+MagentaBeatsLookAndFeel::MagentaBeatsLookAndFeel()
+{
+    setColour(AlertWindow::backgroundColourId, Colours::black);
+}
+
 void MagentaBeatsLookAndFeel::drawRotarySlider (Graphics &g, int x, int y, int width, int height, float sliderPosProportional, float rotaryStartAngle, float rotaryEndAngle, Slider &slider)
 {
     ArchedSliderLookAndFeel::drawRotarySlider(g, x, y, width, height, sliderPosProportional, rotaryStartAngle, rotaryEndAngle, slider);
@@ -27,3 +32,7 @@ juce::Slider::SliderLayout MagentaBeatsLookAndFeel::getSliderLayout (Slider &sli
     return layout;
 }
 
+//void MagentaBeatsLookAndFeel::drawAlertBox (Graphics &g, AlertWindow &a, const Rectangle<int> &textArea, TextLayout &textLayout)
+//{
+//    LookAndFeel_V4::drawAlertBox(g, a, textArea, textLayout);
+//}

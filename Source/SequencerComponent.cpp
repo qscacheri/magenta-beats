@@ -11,7 +11,7 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SequencerComponent.h"
 #include "qtils.h"
-
+#define NUM_VOICES 4
 //==============================================================================
 SequencerComponent::SequencerComponent(Sequencer &s, bool shouldFlip) : sequencer(s)
 {
@@ -43,11 +43,11 @@ void SequencerComponent::paintGrid(Graphics& g)
     NoteSequence* sequence = sequencer.getNoteSequence();
     int totalLength = sequencer.getTotalLength();
     float xDist = (float)getWidth() / totalLength;
-    float yDist = (float)getHeight() / 4;
+    float yDist = (float)getHeight() / NUM_VOICES;
     
     Rectangle<float> area(0, 0, xDist, yDist);
     
-    for (int rows = 0; rows < 4; rows++)
+    for (int rows = 0; rows < NUM_VOICES; rows++)
     {
         
         for (int cols = 0; cols < totalLength; cols++)
@@ -113,11 +113,11 @@ std::pair<int, int> SequencerComponent::checkClick(Point<float> p)
 {
     int totalLength = sequencer.getTotalLength();
     float xDist = getWidth() / totalLength;
-    float yDist = getHeight() / 4;
+    float yDist = getHeight() / NUM_VOICES;
     
     Rectangle<float> area(0, 0, xDist, yDist);
 
-    for (int rows = 0; rows < 4; rows++)
+    for (int rows = 0; rows < NUM_VOICES; rows++)
     {
         if (p.getY() > area.getBottom())
         {

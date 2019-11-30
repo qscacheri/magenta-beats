@@ -16,7 +16,7 @@
 //==============================================================================
 /**
 */
-class MagentaBeatsAudioProcessorEditor  : public AudioProcessorEditor
+class MagentaBeatsAudioProcessorEditor  : public AudioProcessorEditor, public Slider::Listener
 {
 public:
     MagentaBeatsAudioProcessorEditor (MagentaBeatsAudioProcessor&);
@@ -27,6 +27,9 @@ public:
     void resized() override;
     
     void paintLoading(Graphics& g);
+    
+    // slider listener
+    void sliderValueChanged(Slider* s) override;
 private:
     std::unique_ptr<SequencerComponent> sequencerComponent1;
     std::unique_ptr<SequencerComponent> sequencerComponent2;

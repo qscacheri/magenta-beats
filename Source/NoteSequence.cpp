@@ -7,18 +7,6 @@ using namespace pybind11::literals;
 
 Array<int> NoteSequence::noteValues({36, 38, 42, 46});
 
-//PYBIND11_MODULE(MagentaBeats, m) {
-//
-//    py::class_<NoteSequence>(m, "CNoteSequence")
-//    .def(py::init<>())
-//    .def("test", &NoteSequence::test)
-//    .def("getNotes", &NoteSequence::getNotes);
-//
-//    py::class_<Note>(m, "CNote")
-//    .def(py::init<>());
-//
-//}
-
 int noteSort(const Note &n1, const Note &n2)
 {
     return n1.startTime < n2.startTime;

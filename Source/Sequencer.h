@@ -13,9 +13,18 @@
 #include "JuceHeader.h"
 #include <array>
 
+
+
 class Sequencer
 {
 public:
+    
+    class SequencerListener
+    {
+    public:
+        virtual ~SequencerListener();
+        virtual void sequenceChanged()=0;
+    };
     
     enum DrumMidiNote: int
     {
@@ -29,7 +38,8 @@ public:
     
     int getTotalLength() { return totalLength; }
     
-    NoteSequence* getNoteSequence() { return &sequence; };
+    NoteSequence* getNoteSequence() { return sequence.get(); };
+    void setNewSequence(NoteSequence* newSequence);
     
     void prepareToPlay(double sampleRate);
     
@@ -39,9 +49,14 @@ public:
     ValueTree getStateInformation();
     void setStateInformation(ValueTree tree);
     
-private:
+    // listener methods
+    void addListener(SequencerListener*);
+    void removeListener(SequencerListener*);
     
-    NoteSequence sequence;
+private:
+    std::vector<SequencerListener*> listeners;
+    
+    std::unique_ptr<NoteSequence> sequence;
     AudioPlayHead* playhead;
     Synthesiser sampler;
     AudioFormatManager formatManager;
