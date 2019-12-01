@@ -19,7 +19,6 @@ MagentaBeatsAudioProcessor::MagentaBeatsAudioProcessor()
                        ), parameters(*this, nullptr, "PARAMETERS", createLayout())
 #endif
 {
-    
     Py_Initialize();
 }
 
@@ -281,9 +280,9 @@ NoteSequence MagentaBeatsAudioProcessor::applyModel()
 
 void MagentaBeatsAudioProcessor::importModules()
 {
-    magenta = py::module::import("magenta");
-    magentaMusic = magenta.attr("music");
-    music_pb2 = magenta.attr("protobuf").attr("music_pb2");
+//    magenta = py::module::import("magenta");
+//    magentaMusic = magenta.attr("music");
+//    music_pb2 = magenta.attr("protobuf").attr("music_pb2");
     
     PyRun_SimpleString("import sys\n");
 #ifdef RELEASE
