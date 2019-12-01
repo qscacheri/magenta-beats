@@ -5,7 +5,7 @@
 
 using namespace pybind11::literals;
 
-Array<int> NoteSequence::noteValues({36, 38, 42, 46});
+Array<int> NoteSequence::noteValues({36, 38, 42, 46, 48, 52});
 
 int noteSort(const Note &n1, const Note &n2)
 {
