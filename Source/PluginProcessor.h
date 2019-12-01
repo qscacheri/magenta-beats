@@ -31,7 +31,7 @@ class MagentaBeatsAudioProcessor  : public AudioProcessor
 public:
     enum SequencerType : int
     {
-        userSeq = 1,
+        userSeq = 0,
         magentaSeq
     };
     
@@ -85,11 +85,14 @@ public:
         return modulesLoaded;
     }
     
+    void setSelectedSequencer(int which) { selectedSequencer = which; }
+
     NoteSequence applyModel();
 
     AudioProcessorValueTreeState parameters;
     
     float temperatureParam = 1;
+    
     
 private:
     
@@ -103,6 +106,8 @@ private:
     
     void initializeModel();
     
+    int selectedSequencer = SequencerType::userSeq;
+
     // Sequencer object
     Sequencer userSequencer;
     Sequencer magentaSequencer;

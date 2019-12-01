@@ -94,6 +94,8 @@ void MagentaBeatsAudioProcessor::changeProgramName (int index, const String& new
 void MagentaBeatsAudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
     userSequencer.prepareToPlay(sampleRate);
+    magentaSequencer.prepareToPlay(sampleRate);
+
 }
 
 void MagentaBeatsAudioProcessor::releaseResources()
@@ -128,7 +130,11 @@ bool MagentaBeatsAudioProcessor::isBusesLayoutSupported (const BusesLayout& layo
 
 void MagentaBeatsAudioProcessor::processBlock (AudioBuffer<float>& buffer, MidiBuffer& midiMessages)
 {
-    userSequencer.processBlock(getPlayHead(), buffer, midiMessages);
+    if (selectedSequencer == SequencerType::userSeq)
+        userSequencer.processBlock(getPlayHead(), buffer, midiMessages);
+    else
+        magentaSequencer.processBlock(getPlayHead(), buffer, midiMessages);
+
 }
 
 //==============================================================================
@@ -280,7 +286,7 @@ void MagentaBeatsAudioProcessor::importModules()
     music_pb2 = magenta.attr("protobuf").attr("music_pb2");
     
     PyRun_SimpleString("import sys\n");
-    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/\")\n");
+    PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python\")\n");
     magenta_beats = py::module::import("magenta_beats");
     
     modulesLoaded = true;

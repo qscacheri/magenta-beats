@@ -44,8 +44,6 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
             AlertWindow::showMessageBox(AlertWindow::AlertIconType::InfoIcon, "Loading necessary data", "Magenta Beats is loading the necessary data to create new beats. This only happens the first time a new beat is created");
         }
         processor.applyModel();
-        
-        
     };
     addAndMakeVisible(createMagentaButton.get());
     
@@ -98,13 +96,15 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
     sequencerSelectButton.reset(new DrawableButton("sequencerSelect", DrawableButton::ButtonStyle::ImageFitted));
     sequencerSelectButton->setClickingTogglesState(true);
     sequencerSelectButton->setImages(userImage.get(), nullptr, nullptr, nullptr, magentaImage.get());
-    sequencerSelectButton->onStateChange = [&]{
+    sequencerSelectButton->onStateChange = [&]
+    {
+        processor.setSelectedSequencer(sequencerSelectButton->getToggleState());
         sequencerComponent1->isSelected = !sequencerSelectButton->getToggleState();
         sequencerComponent2->isSelected = sequencerSelectButton->getToggleState();
     };
     addAndMakeVisible(sequencerSelectButton.get());
     
-    setSize (1200, 800);
+    setSize (1100, 700);
 }
 
 MagentaBeatsAudioProcessorEditor::~MagentaBeatsAudioProcessorEditor()

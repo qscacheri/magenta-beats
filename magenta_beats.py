@@ -45,7 +45,7 @@ def createDrums():
 def generateNewSequence(input_sequence, temperature, write_to_file):
 
     input_sequence = mm.quantize_note_sequence(input_sequence, 8)
-    bundle = sequence_generator_bundle.read_bundle_file('/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/drum_kit_rnn.mag')
+    bundle = sequence_generator_bundle.read_bundle_file('/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python/drum_kit_rnn.mag')
     generator_map = drums_rnn_sequence_generator.get_generator_map()
     drum_rnn = generator_map['drum_kit'](checkpoint=None, bundle=bundle)
     drum_rnn.initialize()

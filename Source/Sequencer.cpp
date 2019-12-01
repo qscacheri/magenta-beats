@@ -98,7 +98,7 @@ void Sequencer::addToBufferIfNeeded(int which, int samplesPerBlock, MidiBuffer &
         else if (beatInSamples > posInSamples &&
             beatInSamples < posInSamples + samplesPerBlock)
         {
-            DBG("beat");
+//            DBG("beat");
             long long offset = beatInSamples - posInSamples;
             midiBuffer.addEvent(MidiMessage::noteOn(1, notes[i].pitch, .8f), offset);
         }
