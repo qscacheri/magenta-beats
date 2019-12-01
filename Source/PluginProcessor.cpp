@@ -286,7 +286,11 @@ void MagentaBeatsAudioProcessor::importModules()
     music_pb2 = magenta.attr("protobuf").attr("music_pb2");
     
     PyRun_SimpleString("import sys\n");
+#ifdef RELEASE
+    PyRun_SimpleString("sys.path.insert(0, \"/Users/Library/Application Support/Quin Scacheri/Magenta Beats\")\n");
+#else
     PyRun_SimpleString("sys.path.insert(0, \"/Users/quinscacheri/Documents/dev/JUCE Files/Magenta Beats/Source/python\")\n");
+#endif
     magenta_beats = py::module::import("magenta_beats");
     
     modulesLoaded = true;
