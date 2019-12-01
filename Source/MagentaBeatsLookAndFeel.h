@@ -32,5 +32,10 @@ public:
         return l;
     }
     
+    virtual void drawDrawableButton (Graphics &, DrawableButton &, bool shouldDrawButtonAsHighlighted, bool shouldDrawButtonAsDown) override
+    {
+        // draw nothing
+    }
+    
 //    virtual void drawAlertBox (Graphics &, AlertWindow &, const Rectangle< int > &textArea, TextLayout &);
 };
