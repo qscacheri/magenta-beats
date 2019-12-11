@@ -17,7 +17,7 @@
 //==============================================================================
 /*
 */
-class SequencerComponent : public Component, public Timer, public Button::Listener
+class SequencerComponent : public Component, public Timer, public Button::Listener, public Sequencer::Listener
 {
 public:
     
@@ -52,6 +52,9 @@ public:
     void buttonStateChanged(Button* b) override;
     
     bool isSelected = true;
+    
+    virtual void sequenceChanged() override { repaint(); }
+    
 private:
     Sequencer &sequencer;
     std::unique_ptr<Slider> lengthSlider;

@@ -11,10 +11,13 @@
 #include "../JuceLibraryCode/JuceHeader.h"
 #include "SequencerComponent.h"
 #include "qtils.h"
+
 #define NUM_VOICES 6
+
 //==============================================================================
 SequencerComponent::SequencerComponent(Sequencer &s, bool shouldFlip) : sequencer(s)
 {
+    sequencer.addListener(this);
     
     setOpaque(true);
     
@@ -103,6 +106,15 @@ void SequencerComponent::paintGrid(Graphics& g)
         }
         
         gridPhase += gridDirection * .05;
+        
+        area.setBounds(xDist * 5, 0, 1, getHeight());
+        
+        for (int i = 1; i <= 3; i++)
+        {
+            g.setColour(Colours::white);
+            g.drawRect(area);
+            area.translate(xDist * 4, 0);
+        }
     }
 }
 
@@ -185,7 +197,7 @@ void SequencerComponent::colourChanged()
 
 void SequencerComponent::timerCallback()
 {
-    repaint();
+//    repaint();
 }
 
 void SequencerComponent::buttonClicked(Button* b)

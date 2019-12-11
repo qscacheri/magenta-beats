@@ -19,10 +19,9 @@ class Sequencer
 {
 public:
     
-    class SequencerListener
+    class Listener
     {
     public:
-        virtual ~SequencerListener();
         virtual void sequenceChanged()=0;
     };
     
@@ -30,8 +29,10 @@ public:
     {
         kickMidiNote = 36,
         snareMidiNote = 38,
+        clapMidiNote = 39,
         hhCLosedMidiNote = 42,
-        hhOpenMidiNote = 46
+        hhOpenMidiNote = 46,
+        crashMidiNote = 49
     };
 
     Sequencer();
@@ -50,15 +51,15 @@ public:
     void setStateInformation(ValueTree tree);
     
     // listener methods
-    void addListener(SequencerListener*);
-    void removeListener(SequencerListener*);
+    void addListener(Listener*);
+    void removeListener(Listener*);
     
     void swapSequences(Sequencer &otherSequencer, bool clearOther = true);
-    void clearSequence() { sequence.reset(new NoteSequence()); }
+    void clearSequence();
     std::unique_ptr<NoteSequence>& getSequenceForSwap();
     
 private:
-    std::vector<SequencerListener*> listeners;
+    std::vector<Listener*> listeners;
     
     std::unique_ptr<NoteSequence> sequence;
     AudioPlayHead* playhead;
@@ -66,5 +67,5 @@ private:
     AudioFormatManager formatManager;
     float lastSampleRate = 48000;
     int totalLength = 16;
-    std::array<SynthesiserSound::Ptr, 4> samplerSounds;    
+    std::array<SynthesiserSound::Ptr, 6> samplerSounds;    
 };

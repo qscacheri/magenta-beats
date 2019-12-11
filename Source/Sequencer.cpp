@@ -9,6 +9,7 @@
 */
 
 #include "Sequencer.h"
+#define NUM_VOICES 6
 
 Sequencer::Sequencer()
 {
@@ -16,7 +17,7 @@ Sequencer::Sequencer()
     
     formatManager.registerBasicFormats();
     sampler.clearVoices();
-    for (int i = 0; i < 4; i++){
+    for (int i = 0; i < NUM_VOICES; i++){
         sampler.addVoice(new SamplerVoice());
     }
     std::unique_ptr<AudioFormatReader> reader;
@@ -41,11 +42,29 @@ Sequencer::Sequencer()
     reader.reset(formatManager.createReaderFor (new MemoryInputStream(BinaryData::open_wav, BinaryData::open_wavSize, false)));
     samplerSounds[3] = new SamplerSound("hato", *reader.get(), range, DrumMidiNote::hhOpenMidiNote, 0, 10, 10.0);
 
+    range.clear();
+    range.setBit(DrumMidiNote::hhOpenMidiNote);
+    reader.reset(formatManager.createReaderFor (new MemoryInputStream(BinaryData::open_wav, BinaryData::open_wavSize, false)));
+    samplerSounds[3] = new SamplerSound("hato", *reader.get(), range, DrumMidiNote::hhOpenMidiNote, 0, 10, 10.0);
+
+    range.clear();
+    range.setBit(DrumMidiNote::clapMidiNote);
+    reader.reset(formatManager.createReaderFor (new MemoryInputStream(BinaryData::clap_wav, BinaryData::clap_wavSize, false)));
+    samplerSounds[4] = new SamplerSound("clap", *reader.get(), range, DrumMidiNote::clapMidiNote, 0, 10, 10.0);
+
+    range.clear();
+    range.setBit(DrumMidiNote::crashMidiNote);
+    reader.reset(formatManager.createReaderFor (new MemoryInputStream(BinaryData::crash_wav, BinaryData::crash_wavSize, false)));
+    samplerSounds[5] = new SamplerSound("crash", *reader.get(), range, DrumMidiNote::crashMidiNote, 0, 10, 10.0);
 
     sampler.addSound(samplerSounds[0]);
     sampler.addSound(samplerSounds[1]);
     sampler.addSound(samplerSounds[2]);
     sampler.addSound(samplerSounds[3]);
+    sampler.addSound(samplerSounds[4]);
+    sampler.addSound(samplerSounds[5]);
+
+    
     range.clear();
 }
 
@@ -118,11 +137,15 @@ void Sequencer::setStateInformation(ValueTree tree)
 void Sequencer::setNewSequence(NoteSequence* newSequence)
 {
     sequence.reset(newSequence);
-    for (int i = 0; i < listeners.size(); i++)
-    {
-        MessageManager::callAsync([&]{ listeners[i]->sequenceChanged(); });
-        
+//    for (int i = 0; i < listeners.size(); i++)
+//    {
+//        MessageManager::callAsync([&]{ listeners[i]->sequenceChanged(); });
+//
+//    }
+    for (int i = 0; i < listeners.size(); i++){
+        listeners[i]->sequenceChanged();
     }
+
 }
 
 void Sequencer::swapSequences(Sequencer &otherSequencer, bool clearOther)
@@ -130,6 +153,18 @@ void Sequencer::swapSequences(Sequencer &otherSequencer, bool clearOther)
     sequence.swap(otherSequencer.getSequenceForSwap());
     if (clearOther)
         otherSequencer.clearSequence();
+    for (int i = 0; i < listeners.size(); i++){
+        listeners[i]->sequenceChanged();
+    }
+}
+
+void Sequencer::clearSequence()
+{
+    sequence.reset(new NoteSequence());
+    for (int i = 0; i < listeners.size(); i++){
+        listeners[i]->sequenceChanged();
+    }
+
 }
 
 std::unique_ptr<NoteSequence>& Sequencer::getSequenceForSwap()
@@ -137,12 +172,12 @@ std::unique_ptr<NoteSequence>& Sequencer::getSequenceForSwap()
     return sequence;
 }
 
-void Sequencer::addListener(SequencerListener* l)
+void Sequencer::addListener(Listener* l)
 {
     listeners.push_back(l);
 }
 
-void Sequencer::removeListener(SequencerListener* l)
+void Sequencer::removeListener(Listener* l)
 {
     for (int i = 0; i < listeners.size(); i++)
     {

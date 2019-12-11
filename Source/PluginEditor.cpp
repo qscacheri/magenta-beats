@@ -101,7 +101,10 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
     {
         processor.setSelectedSequencer(sequencerSelectButton->getToggleState());
         sequencerComponent1->isSelected = !sequencerSelectButton->getToggleState();
+        sequencerComponent1->repaint();
+        
         sequencerComponent2->isSelected = sequencerSelectButton->getToggleState();
+        sequencerComponent2->repaint();
     };
     addAndMakeVisible(sequencerSelectButton.get());
     

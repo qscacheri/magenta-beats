@@ -42,6 +42,8 @@
       <FILE id="reqSdj" name="qtils.h" compile="0" resource="0" file="../../Libraries/qtils/qtils.h"/>
     </GROUP>
     <GROUP id="{74E0CB7A-CBD5-17E7-6788-CCB784209281}" name="samples">
+      <FILE id="JRu7oX" name="clap.wav" compile="0" resource="1" file="samples/clap.wav"/>
+      <FILE id="ZCXUN4" name="crash.wav" compile="0" resource="1" file="samples/crash.wav"/>
       <FILE id="GDoHU0" name="closed.wav" compile="0" resource="1" file="samples/closed.wav"/>
       <FILE id="hUQWfk" name="kick.wav" compile="0" resource="1" file="samples/kick.wav"/>
       <FILE id="CJEOlH" name="open.wav" compile="0" resource="1" file="samples/open.wav"/>

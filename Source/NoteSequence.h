@@ -45,8 +45,6 @@ public:
 
 private:
     int tempo = 120;
-    std::vector<Note> notes;
-    Array<Array<Note>> notes2;
-    
+    std::vector<Note> notes;    
 };
 #endif

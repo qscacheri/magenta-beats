@@ -5,7 +5,7 @@
 
 using namespace pybind11::literals;
 
-Array<int> NoteSequence::noteValues({36, 38, 42, 46, 48, 52});
+Array<int> NoteSequence::noteValues({36, 38, 42, 46, 49, 39});
 
 int noteSort(const Note &n1, const Note &n2)
 {
@@ -14,10 +14,7 @@ int noteSort(const Note &n1, const Note &n2)
 
 NoteSequence::NoteSequence()
 {
-    notes2.resize(4);
-    for (int i = 0; i < 4; i++){
-        notes2[i].resize(16);
-    }
+    
 }
 
 std::string NoteSequence::toString()
@@ -35,7 +32,6 @@ void NoteSequence::addNote(Note n)
 {
     notes.push_back(n);
     int which = noteValues.indexOf(n.pitch);
-    notes2[which][n.startTime] = n;
 }
 
 void NoteSequence::addNote(int pitch, int startTime, int endTime, int velocity)
