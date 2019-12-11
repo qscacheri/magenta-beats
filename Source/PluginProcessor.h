@@ -91,6 +91,8 @@ public:
 
     AudioProcessorValueTreeState parameters;
     
+    void swapSequences();
+    
     float temperatureParam = 1;
     
     
