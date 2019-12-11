@@ -52,6 +52,7 @@ MagentaBeatsAudioProcessorEditor::MagentaBeatsAudioProcessorEditor (MagentaBeats
     
     recycleButton.reset(new DrawableButton("create", DrawableButton::ButtonStyle::ImageFitted));
     recycleButton->setImages(image.get());
+    recycleButton->onClick = [&] { processor.swapSequences(); };
     addAndMakeVisible(recycleButton.get());
 
     temperatureSlider.reset(new Slider());

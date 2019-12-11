@@ -125,6 +125,18 @@ void Sequencer::setNewSequence(NoteSequence* newSequence)
     }
 }
 
+void Sequencer::swapSequences(Sequencer &otherSequencer, bool clearOther)
+{
+    sequence.swap(otherSequencer.getSequenceForSwap());
+    if (clearOther)
+        otherSequencer.clearSequence();
+}
+
+std::unique_ptr<NoteSequence>& Sequencer::getSequenceForSwap()
+{
+    return sequence;
+}
+
 void Sequencer::addListener(SequencerListener* l)
 {
     listeners.push_back(l);

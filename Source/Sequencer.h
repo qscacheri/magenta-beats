@@ -53,6 +53,10 @@ public:
     void addListener(SequencerListener*);
     void removeListener(SequencerListener*);
     
+    void swapSequences(Sequencer &otherSequencer, bool clearOther = true);
+    void clearSequence() { sequence.reset(new NoteSequence()); }
+    std::unique_ptr<NoteSequence>& getSequenceForSwap();
+    
 private:
     std::vector<SequencerListener*> listeners;
     

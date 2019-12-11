@@ -295,7 +295,7 @@ void MagentaBeatsAudioProcessor::importModules()
 
 void MagentaBeatsAudioProcessor::swapSequences()
 {
-    
+    userSequencer.swapSequences(magentaSequencer);
 }
 
 //==============================================================================
